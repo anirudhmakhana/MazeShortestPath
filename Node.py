@@ -16,6 +16,8 @@ PURPLE = (161, 3, 252)
 AQUA = (0, 255, 255)
 
 
+
+
 class Node:
     def __init__(self, row, col, SIZE, total_rows):
         # variables for displaying
