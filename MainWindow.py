@@ -52,6 +52,15 @@ class MainWindow:
         self.draw_grid(win, rows, width)
         pygame.display.update()
 
+    def get_clicked_pos(self, pos, rows, width):
+        gap = width // rows
+        y, x = pos
+
+        row = y // gap
+        col = x // gap
+
+        return row, col
+
     def run(self, win, width):
         ROWS = 50
         grid = self.make_grid(ROWS, width)
@@ -65,10 +74,36 @@ class MainWindow:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
+
+                if pygame.mouse.get_pressed()[0]:  # LEFT
+                    pos = pygame.mouse.get_pos()
+                    row, col = self.get_clicked_pos(pos, ROWS, width)
+                    spot = grid[row][col]
+                    if not start and spot != end:
+                        start = spot
+                        start.make_start()
+
+                    elif not end and spot != start:
+                        end = spot
+                        end.make_end()
+
+                    elif spot != end and spot != start:
+                        spot.make_barrier()
+
+                elif pygame.mouse.get_pressed()[2]:  # RIGHT
+                    pos = pygame.mouse.get_pos()
+                    row, col = self.get_clicked_pos(pos, ROWS, width)
+                    spot = grid[row][col]
+                    spot.reset()
+                    if spot == start:
+                        start = None
+                    elif spot == end:
+                        end = None
+
         pygame.quit()
 
-
-WIDTH = 800
-WIN = pygame.display.set_mode((WIDTH, WIDTH))
-mainWindow = MainWindow(WIDTH)
-mainWindow.run(WIN, WIDTH)
+if __name__ == '__main__':
+    WIDTH = 800
+    WIN = pygame.display.set_mode((WIDTH, WIDTH))
+    mainWindow = MainWindow(WIDTH)
+    mainWindow.run(WIN, WIDTH)
